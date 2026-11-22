@@ -1,8 +1,10 @@
 digraph Tree {
 nodesep=0.5;
-Node0x7b6e5e9e01f0 [shape=box, style=rounded, label=< "Test root node" >];
-Node0x7b6e5e9e01f0 -> Node0x7b6e5e9e0220;
-Node0x7b6e5e9e0220 [shape=box, style=rounded, label=< "Left \"child\"" >];
-Node0x7b6e5e9e01f0 -> Node0x7b6e5e9e0250;
-Node0x7b6e5e9e0250 [shape=box, style=rounded, label=< "Right child" >];
+Node0x7b39d9de01f0 [shape=box, style=rounded, label=< "Test root node" >];
+Node0x7b39d9de01f0 -> Node0x7b39d9de0220;
+Node0x7b39d9de0220 [shape=box, style=rounded, label=< "Left \"child\"" >];
+Node0x7b39d9de01f0 -> Node0x7b39d9de0250;
+Node0x7b39d9de0250 [shape=box, style=rounded, label=< "Right child" >];
+Node0x7b39d9de0250 -> Node0x7b39d9de02b0;
+Node0x7b39d9de02b0 [shape=box, style=rounded, label=< "Some text with \\ a backslash" >];
 };

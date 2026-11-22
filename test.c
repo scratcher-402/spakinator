@@ -1,27 +1,26 @@
 #include "tree.h"
+#include "database.h"
 
-const char* my_tree = "\"Test root node\" (\"Left \\\"child\\\"\" (nil, nil), \"Right child\" (nil, nil))";
-
-void handle_error(TreeError err) {
+void handle_error(DBError err) {
     if (err) {
         printf("Error in tree, code %d\n", err);
         exit(1);
     }
 }
 
+const char* db_file_name = "db.txt";
+
 int main() {
-    TreeError err = TREE_OK;
+    DBError err = DB_OK;
 
-    TreeNode* root = NULL;
-    err = tree_parse(&root, my_tree);
+    Database db = {0};
+    err = db_load(db_file_name, &db);
     handle_error(err);
 
-    $info("Tree parsed");
-    tree_dump(root, stdout);
-
-    err = tree_dot_dump(root);
+    err = db_save(&db);
     handle_error(err);
 
-    tree_free(&root);
+    db_close(&db);
+
     return 0;
 }
