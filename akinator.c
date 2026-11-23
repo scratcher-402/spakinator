@@ -16,6 +16,8 @@ int main(int argc, const char** argv) {
         return 1;
     }
 
+    tree_dot_dump(db.root);
+
     int ret = 0;
     GuessError guess_err = guess_start(&db);
     if (guess_err) {

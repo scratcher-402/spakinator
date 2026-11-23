@@ -1,6 +1,6 @@
 #define SPTREE_IMPLEMENTATION
 #include "tree.h"
-#include "lib/sptree/lib/spdebug2/spdebug.h"
+#include "spdebug.h"
 
 
 void my_tree_element_destroy(NodeItem* item) {
@@ -93,7 +93,7 @@ static int get_string_size(const char* str, size_t* size_ptr, size_t* full_size_
         return 1;
     }
 
-    $debug("size: %zu, str: %.*s", str - saved_str, str - saved_str, saved_str);
+    // $debug("size: %zu, str: %.*s", str - saved_str, str - saved_str, saved_str);
 
     *size_ptr = size;
     *full_size_ptr = str - saved_str;
@@ -101,7 +101,7 @@ static int get_string_size(const char* str, size_t* size_ptr, size_t* full_size_
 }
 
 int my_tree_element_deserialize(const char** strp, NodeItem* item) {
-    $debug("deserialize");
+    // $debug("deserialize");
     assert(item != NULL);
     assert(strp != NULL);
 
@@ -114,18 +114,18 @@ int my_tree_element_deserialize(const char** strp, NodeItem* item) {
         return err;
     }
 
-    $debug("size: %zu, full size: %zu", string_size, string_full_size);
+    // $debug("size: %zu, full size: %zu", string_size, string_full_size);
 
     char* text = (char*)calloc(string_size + 1, sizeof(char));
 
-    $vs(*strp);
+    // $vs(*strp);
     skip_spaces(strp);
-    $vs(*strp);
+    // $vs(*strp);
     *strp += 1;
 
     size_t str_index = 0;
     for (size_t i = 0; i < string_full_size; i++) {
-        $debug("%c %zu %zu", (*strp)[i], i, str_index);
+        // $debug("%c %zu %zu", (*strp)[i], i, str_index);
         if ((*strp)[i] == '\\') {
             text[str_index] = (*strp)[i+1];
             str_index += 1;
@@ -139,7 +139,7 @@ int my_tree_element_deserialize(const char** strp, NodeItem* item) {
     item->text = text;
     *strp += string_full_size + 1;
 
-    $vs(*strp);
+    // $vs(*strp);
 
     return 0;
 }

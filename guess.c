@@ -149,7 +149,7 @@ int guess_handler(TreeNode* node, TreeWalkDirection* direction, TreeNodeType typ
         *direction = TWD_QUIT;
         return err;
     } else {
-        printf("Is it %s? [Y/n] ", node->el.text);
+        printf("%s [Y/n] ", node->el.text);
 
         char choice = 0;
         int count = scanf(" %c", &choice);
