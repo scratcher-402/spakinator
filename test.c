@@ -1,9 +1,9 @@
-#include "tree.h"
 #include "database.h"
+#include "guess.h"
 
 void handle_error(DBError err) {
     if (err) {
-        printf("Error in tree, code %d\n", err);
+        printf("Error in database, code %d\n", err);
         exit(1);
     }
 }
@@ -17,8 +17,14 @@ int main() {
     err = db_load(db_file_name, &db);
     handle_error(err);
 
-    err = db_save(&db);
+    TreeNode* root = NULL;
+    err = db_get_root(&db, &root);
     handle_error(err);
+
+    tree_dot_dump(root);
+
+    GuessError guess_err = guess_start(&db);
+    $d(guess_err);
 
     db_close(&db);
 

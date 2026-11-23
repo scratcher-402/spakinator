@@ -17,9 +17,11 @@ static DBError get_file_size(FILE* file, size_t* size_ptr) {
     return DB_OK;
 }
 
-// TODO: correct cleanup
 DBError db_load(const char* file_name, Database* db) {
+    DBError ret = DB_OK;
+
     FILE* file = fopen(file_name, "r");
+    char* file_data = NULL;
     if (!file) {
         $errno;
         $err("[db_load] Could not open file: %s", file_name);
@@ -30,21 +32,24 @@ DBError db_load(const char* file_name, Database* db) {
     DBError err = get_file_size(file, &file_size);
     if (err) {
         $err("[db_load] Could not get file size");
-        return err;
+        ret = err;
+        goto cleanup;
     }
 
-    char* file_data = (char*)calloc(file_size + 1, sizeof(char));
+    file_data = (char*)calloc(file_size + 1, sizeof(char));
     if (!file_data) {
         $errno;
         $err("[db_load] Could not allocate memory for file data");
-        return DB_ALLOC_ERROR;
+        ret = DB_ALLOC_ERROR;
+        goto cleanup;
     }
 
     size_t bytes_read = fread(file_data, sizeof(char), file_size, file);
     if (bytes_read != file_size) {
         $errno;
         $err("[db_load] Could not read data from file (could read %zu / %zu symbols)", bytes_read, file_size);
-        return DB_READ_ERROR;
+        ret = DB_READ_ERROR;
+        goto cleanup;
     }
     file_data[file_size] = '\0';
 
@@ -52,15 +57,18 @@ DBError db_load(const char* file_name, Database* db) {
     TreeError tree_err = tree_parse(&root, file_data);
     if (tree_err) {
         $err("[db_load] Could not parse tree");
-        return DB_PARSE_ERROR;
+        ret = DB_PARSE_ERROR;
+        goto cleanup;
     }
-
-    free(file_data);
-    fclose(file);
 
     db->root = root;
     db->file_name = file_name;
-    return DB_OK;
+
+cleanup:
+    free(file_data);
+    fclose(file);
+
+    return ret;
 }
 
 DBError db_get_root(Database* db, TreeNode** root) {
@@ -68,8 +76,9 @@ DBError db_get_root(Database* db, TreeNode** root) {
     return DB_OK;
 }
 
-// TODO: cleanup
 DBError db_save(Database* db) {
+    DBError ret = DB_OK;
+
     FILE* file = fopen(db->file_name, "w");
     if (!file) {
         $errno;
@@ -80,11 +89,13 @@ DBError db_save(Database* db) {
     TreeError tree_err = tree_dump(db->root, file);
     if (tree_err) {
         $err("[db_save] Could not dump tree to a file");
-        return DB_DUMP_ERROR;
+        ret = DB_DUMP_ERROR;
+        goto cleanup;
     }
 
+cleanup:
     fclose(file);
-    return DB_OK;
+    return ret;
 }
 
 void db_close(Database* db) {

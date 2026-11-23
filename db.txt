@@ -1,1 +1,1 @@
-"Sample text" ("Sample Text" (nil, nil), "SAMPLE TEXT" ("sample text" (nil, nil), nil))
+"Sample text" ("Sample Text" (nil, nil), "SAMPLE TEXT" ("sample text" (nil, nil), "sAMPLE tEXT" ("sAMPLE TEXT" (nil, nil), nil)))
