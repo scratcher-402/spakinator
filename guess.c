@@ -70,7 +70,7 @@ static int nonexistent_item(TreeNode* node, TreeAttachMode mode) {
                 return GUESS_TREE_ERROR;
             }
 
-            return 0;
+            return GUESS_UPDATE_DB;
 
         case 'n':
         case 'N':
@@ -131,6 +131,8 @@ static int handle_leaf(TreeNode* node) {
                 tree_attach(node, new_variant, TREE_ATTACH_RIGHT);
                 tree_attach(node, old_variant, TREE_ATTACH_LEFT);
         }
+
+        return GUESS_UPDATE_DB;
     }
 
     return GUESS_OK;

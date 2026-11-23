@@ -16,17 +16,63 @@ int main(int argc, const char** argv) {
         return 1;
     }
 
-    tree_dot_dump(db.root);
-
     int ret = 0;
-    GuessError guess_err = guess_start(&db);
-    if (guess_err) {
-        $fatal("Error while guessing");
-        ret = 1;
-        goto cleanup;
-    }
 
-    db_save(&db);
+    while (1) {
+        char choice = 0;
+        printf(
+            "Select action: \n"
+            " 1) Start guessing\n"
+            " 2) Dump database to dot file\n"
+            " 0) Quit\n"
+            "> "
+        );
+        int count = scanf(" %c", &choice);
+        if (count != 1) {
+            $errno;
+            $fatal("Input error");
+            ret = 1;
+            goto cleanup;
+        }
+
+        switch (choice) {
+            case '1':
+                GuessError guess_err = guess_start(&db);
+                if (guess_err == GUESS_UPDATE_DB) {
+                    db_err = db_save(&db);
+                    if (db_err) {
+                        $fatal("Error while saving database");
+                        ret = 1;
+                        goto cleanup;
+                    }
+
+                    $info("Database saved");
+                } else if (guess_err) {
+                    $fatal("Error while guessing");
+                    ret = 1;
+                    goto cleanup;
+                }
+
+                break;
+
+            case '2':
+                TreeError tree_err = tree_dot_dump(db.root);
+                if (tree_err) {
+                    $err("Could not dump tree to dot file");
+                } else {
+                    $info("Dot dump saved to tree_sump.dot");
+                }
+
+                break;
+
+            case '0':
+                goto cleanup;
+
+            default:
+                $err("Unknown choice: '%c'");
+                break;
+        }
+    }
 
 cleanup:
     db_close(&db);
