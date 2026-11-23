@@ -24,6 +24,8 @@ int main(int argc, const char** argv) {
         goto cleanup;
     }
 
+    db_save(&db);
+
 cleanup:
     db_close(&db);
     return ret;
